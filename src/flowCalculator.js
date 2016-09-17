@@ -25,7 +25,7 @@ FlowCalculator.prototype.calculate = function (oldImage, newImage, width, height
     var wMax = width - step - 1;
     var hMax = height - step - 1;
     var globalY, globalX, localY, localX;
-    var div, curl;
+    var div = 0, curl = 0;
 
     for (globalY = step + 1; globalY < hMax; globalY += winStep) {
         for (globalX = step + 1; globalX < wMax; globalX += winStep) {
