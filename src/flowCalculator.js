@@ -25,6 +25,7 @@ FlowCalculator.prototype.calculate = function (oldImage, newImage, width, height
     var wMax = width - step - 1;
     var hMax = height - step - 1;
     var globalY, globalX, localY, localX;
+    var div, curl;
 
     for (globalY = step + 1; globalY < hMax; globalY += winStep) {
         for (globalX = step + 1; globalX < wMax; globalX += winStep) {
@@ -74,6 +75,8 @@ FlowCalculator.prototype.calculate = function (oldImage, newImage, width, height
                 -winStep < v && v < winStep) {
                 uu += u;
                 vv += v;
+                div += u * (globalX - wMax / 2) + v * (globalY - hMax / 2);
+                curl += u * (globalY - hMax / 2) - v * (globalX - wMax / 2);
                 zones.push(new FlowZone(globalX, globalY, u, v));
             }
         }
@@ -82,6 +85,8 @@ FlowCalculator.prototype.calculate = function (oldImage, newImage, width, height
     return {
         zones : zones,
         u : uu / zones.length,
-        v : vv / zones.length
+        v : vv / zones.length,
+        div: div / zones.length,
+        curl: curl / zones.length
     };
 };
