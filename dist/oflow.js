@@ -52,9 +52,10 @@ function CanvasFlow(defaultCanvasTag, zoneSize) {
             var newImage = getCurrentPixels();
             if (oldImage && newImage) {
                 var zones = calculator.calculate(oldImage, newImage, width, height);
-                calculatedCallbacks.forEach(function (callback) {
-                    callback(zones);
-                });
+                if(! (zones.u == 0 && zones.v == 0 && zones.div == 0 && zones.curl == 0))
+                  calculatedCallbacks.forEach(function (callback) {
+                      callback(zones);
+                  });
             }
             oldImage = newImage;
         },
@@ -261,9 +262,10 @@ function VideoFlow(defaultVideoTag, zoneSize) {
             var newImage = getCurrentPixels();
             if (oldImage && newImage) {
                 var zones = calculator.calculate(oldImage, newImage, width, height);
-                calculatedCallbacks.forEach(function (callback) {
-                    callback(zones);
-                });
+                if(! (zones.u == 0 && zones.v == 0 && zones.div == 0 && zones.curl == 0))
+                  calculatedCallbacks.forEach(function (callback) {
+                      callback(zones);
+                  });
             }
             oldImage = newImage;
         },
