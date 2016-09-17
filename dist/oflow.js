@@ -1,4 +1,4 @@
-(function(f){if(typeof exports==="object"&&typeof module!=="undefined"){module.exports=f()}else if(typeof define==="function"&&define.amd){define([],f)}else{var g;if(typeof window!=="undefined"){g=window}else if(typeof global!=="undefined"){g=global}else if(typeof self!=="undefined"){g=self}else{g=this}g.oflow = f()}})(function(){var define,module,exports;return (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
+(function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
 /*global window,  */
 
 var FlowCalculator = require('./flowCalculator.js');
@@ -122,6 +122,7 @@ FlowCalculator.prototype.calculate = function (oldImage, newImage, width, height
     var wMax = width - step - 1;
     var hMax = height - step - 1;
     var globalY, globalX, localY, localX;
+    var div = 0, curl = 0;
 
     for (globalY = step + 1; globalY < hMax; globalY += winStep) {
         for (globalX = step + 1; globalX < wMax; globalX += winStep) {
@@ -171,6 +172,8 @@ FlowCalculator.prototype.calculate = function (oldImage, newImage, width, height
                 -winStep < v && v < winStep) {
                 uu += u;
                 vv += v;
+                div += u * (globalX - wMax / 2) + v * (globalY - hMax / 2);
+                curl += u * (globalY - hMax / 2) - v * (globalX - wMax / 2);
                 zones.push(new FlowZone(globalX, globalY, u, v));
             }
         }
@@ -179,7 +182,9 @@ FlowCalculator.prototype.calculate = function (oldImage, newImage, width, height
     return {
         zones : zones,
         u : uu / zones.length,
-        v : vv / zones.length
+        v : vv / zones.length,
+        div: div / zones.length,
+        curl: curl / zones.length
     };
 };
 
@@ -194,15 +199,6 @@ function FlowZone(x, y, u, v) {
 }
 
 },{}],4:[function(require,module,exports){
-module.exports = {
-  WebCamFlow: require('./webcamFlow'),
-  VideoFlow: require('./videoFlow'),
-  CanvasFlow: require('./canvasFlow'),
-  FlowZone: require('./flowZone'),
-  FlowCalculator: require('./flowCalculator')
-};
-
-},{"./canvasFlow":1,"./flowCalculator":2,"./flowZone":3,"./videoFlow":5,"./webcamFlow":6}],5:[function(require,module,exports){
 /*global window */
 
 var FlowCalculator = require('./flowCalculator');
@@ -309,7 +305,7 @@ function VideoFlow(defaultVideoTag, zoneSize) {
     this.getHeight = function () { return height; };
 }
 
-},{"./flowCalculator":2}],6:[function(require,module,exports){
+},{"./flowCalculator":2}],5:[function(require,module,exports){
 /*global navigator, window */
 
 var VideoFlow = require('./videoFlow');
@@ -446,5 +442,13 @@ function WebCamFlow(defaultVideoTag, zoneSize, cameraFacing) {
     };
 }
 
-},{"./videoFlow":5}]},{},[4])(4)
-});
+},{"./videoFlow":4}],6:[function(require,module,exports){
+module.exports = {
+  WebCamFlow: require('./webcamFlow'),
+  VideoFlow: require('./videoFlow'),
+  CanvasFlow: require('./canvasFlow'),
+  FlowZone: require('./flowZone'),
+  FlowCalculator: require('./flowCalculator')
+};
+
+},{"./canvasFlow":1,"./flowCalculator":2,"./flowZone":3,"./videoFlow":4,"./webcamFlow":5}]},{},[6]);
